@@ -17,14 +17,12 @@ const userRoutes = require('./routes/userRoutes');
 
 app.enable("trust proxy");
 
-app.use(cors());
-app.options("*", cors());
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+// app.use(cors());
+app.options('http://localhost:3000', cors());
 app.use(helmet()); // <- Set security HTTP Headers
 
-console.log(`ENV = ${process.env.NODE_ENV}`);
-if (process.env.NODE_ENV === "development") {
-	app.use(morgan("dev"));
-}
+app.use(morgan('dev'));
 
 app.use((req, res, next) => {
 	// <- Serves req time and cookies
@@ -61,12 +59,7 @@ app.use(
 		// <- Prevent Parameter Polution
 		whitelist: [
 			// <- whitelisted properties will not create error if defined more than once
-			"duration",
-			"ratingsQuantity",
-			"ratingsAverage",
-			"maxGroupSize",
-			"price",
-			"difficulty",
+			
 		],
 	})
 );

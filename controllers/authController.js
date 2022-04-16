@@ -21,10 +21,11 @@ const signToken = (id) => {
 };
 const createSendToken = (user, statusCode, res) => {
 	const token = signToken(user.id);
-
+	//console.log(process.env.JWT_COOKIE_EXPIRES_IN);
 	const cookieOptions = {
-		expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN),
+		expires: new Date(Date.now() + +process.env.JWT_COOKIE_EXPIRES_IN),
 		httpOnly: true,
+		path: '/'
 	};
 	if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
@@ -32,7 +33,7 @@ const createSendToken = (user, statusCode, res) => {
 
 	res.cookie('jwt', token, cookieOptions);
 
-	console.log(res);
+	console.log({ token, cookieOptions });
 
 	res.status(statusCode).json({
 		message: 'success',
@@ -44,11 +45,9 @@ const createSendToken = (user, statusCode, res) => {
 };
 // crypto.randomBytes(32).toString('hex');
 
-
 exports.signup = catchAsync(async (req, res, next) => {
 	const userId = `U-${crypto.randomBytes(32).toString('hex')}`;
 
-	
 	const newUser = await User.create({
 		name: req.body.name,
 		email: req.body.email,
@@ -85,7 +84,6 @@ exports.login = catchAsync(async (req, res, next) => {
 	}
 	//console.log(req.headers);
 	createSendToken(user, 200, res);
-	
 });
 exports.protect = catchAsync(async (req, res, next) => {
 	let token;
@@ -115,7 +113,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 		);
 	}
 
-	console.log(('!!! GRANTING ACCESS !!!'));
+	console.log('!!! GRANTING ACCESS !!!');
 
 	res.locals.user = currentUser;
 	req.user = currentUser;
@@ -138,7 +136,6 @@ exports.logout = (req, res, next) => {
 exports.restrictTo = (...roles) => {
 	return (req, res, next) => {
 		if (!roles.includes(req.user.adminStatus)) {
-
 			return next(
 				new AppError(
 					'You do not have permision to perform this action',
@@ -183,4 +180,3 @@ exports.isLoggedIn = async (req, res, next) => {
 	}
 	next();
 };
- 
