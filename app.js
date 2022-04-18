@@ -14,6 +14,7 @@ const app = express();
 
 const AppError = require('./utils/appError');
 const userRoutes = require('./routes/userRoutes');
+const questionRoutes = require('./routes/questionRoutes');
 
 app.enable("trust proxy");
 
@@ -67,6 +68,7 @@ app.use(
 app.use(compression());
 
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/questions', questionRoutes);
 app.all('*', (req, res, next) => {
 	// <- Middleware to handle Non-existing Routes
 

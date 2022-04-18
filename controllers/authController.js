@@ -125,7 +125,6 @@ exports.logout = (req, res, next) => {
 		expires: new Date(Date.now() + 2 * 1000),
 		httpOnly: true,
 	};
-
 	// Sending new cookie with rubbish text to replace the new cookie ->
 	res.cookie('jwt', 'loggedout', cookieOptions);
 
