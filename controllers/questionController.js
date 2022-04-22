@@ -45,9 +45,9 @@ exports.getAllQuestions = catchAsync(async (req, res, next) => {
 		.limit(parseInt(size, 10))
 		.skip(parseInt((page - 1) * size, 10))
 		.populate({
-			path: 'user',
-			select: 'name id'
+			path: 'user answers.user'  
 		});
+       
 
 	// if ((sort === 'intresting' || !sort) && user) {
 
@@ -70,6 +70,39 @@ exports.getAllQuestions = catchAsync(async (req, res, next) => {
 		message: "success",
 		data: {
 			questions
+		}
+	});
+});
+exports.postAnswer = catchAsync(async (req, res, next) => {
+	const { id } = req.params;
+	const {answerBody} = req.body;
+	const { user } = req;
+	console.log(answerBody, req.body);
+
+	if (!answerBody || answerBody === null) {
+		return next(new AppError('Answer Body cannot be empty', 400));
+	}
+
+	const question = await Question.findById(id);
+	console.log(question);
+
+	question.answers.push({
+		body: answerBody,
+		date: Date.now(),
+		user: user.id
+	});
+
+	console.log({ answerBody, user, question });
+
+	const updatedQuestion = await Question.findByIdAndUpdate(id, question, {
+		new: true,
+		runValidators: true
+	});
+
+	res.status(200).json({
+		message: "success",
+		body: {
+			question: updatedQuestion
 		}
 	});
 });

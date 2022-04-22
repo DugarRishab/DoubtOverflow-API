@@ -11,8 +11,15 @@ Router.route('/')
 
 Router.route('/:id')
 	.get(questionController.getQuestion)
-	.patch(authController.protect, questionController.getQuestion)
+	// .patch(authController.protect, questionController.updateQuestion)
 	.delete();
+
+// Router.patch('/vote', authController.protect, questionController.updateVote);
+
+Router.route('/:id/answer')
+	// .patch(authController.protect, questionController.updateAnswer)
+	.post(authController.protect, questionController.postAnswer)
+	// .delete(authController.protect, questionController.deleteAnswer);
 
 
 module.exports = Router;

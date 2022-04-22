@@ -22,21 +22,29 @@ const questionSchema = new mongoose.Schema({
             },
             user: {
                 type: mongoose.Schema.Types.ObjectId,
-                required: [true, 'Question must have a user'],
+                required: [true, 'Answer must have a user'],
                 ref: 'User',
             },
             dateCreated: {
                 type: Date,
                 default: Date.now(),
             },
+            upVotes: {
+                type: [mongoose.Schema.Types.ObjectId],
+                default: [],
+            },
+            downVotes: {
+                type: [mongoose.Schema.Types.ObjectId],
+                default: [],
+            }
         },
     ],
     upVotes: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         default: [],
     },
     downVotes: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         default: [],
     },
     user: {
