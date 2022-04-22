@@ -48,7 +48,7 @@ app.use((req, res, next) => {
 	next();
 });
 
-app.use(express.json({ limit: "10kb",  })); // <- Body Parser Midleware Functions 	// <- 'Limit' limits the amount of data comming in.
+app.use(express.json({ limit: "50kb",  })); // <- Body Parser Midleware Functions 	// <- 'Limit' limits the amount of data comming in.
 app.use(cookieParser()); // <- cookie parser Middleware Function
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
