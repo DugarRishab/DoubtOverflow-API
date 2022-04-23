@@ -112,7 +112,7 @@ exports.deleteQuestion = catchAsync(async (req, res, next) => {
 	
 	const question = await Question.findById(id);
 	
-	if (`${user._id}` != `${question.user}`) {
+	if (`${user._id}` !== `${question.user}`) {
 		return next(new AppError("You donot have permission to perform this action", 403));
 	}
 	await Question.findByIdAndDelete(id);
@@ -149,3 +149,85 @@ exports.deleteAnswer = catchAsync(async (req, res, next) => {
 		message: 'success',
 	});
 })
+exports.voteQuestion = catchAsync(async (req, res, next) => {
+	const { id, vote } = req.params;
+	const { user } = req;
+	const question = await Question.findById(id);
+	console.log(typeof vote);
+	if(vote === "upVote"){
+		if (question.upVotes.includes(user.id)) {
+			return next(new AppError("ALready upVoted once. Cannot do it again"));
+		}
+		const index = question.downVotes.indexOf(user.id);
+		console.log(question.upVotes.length - question.downVotes.length);
+		if (index !== -1) {
+			question.downVotes.splice(index, 1);
+		}
+		question.upVotes.push(user.id);
+		console.log(question.upVotes.length - question.downVotes.length);
+	}
+	if (vote === 'downVote') {
+		if (question.downVotes.includes(user.id)) {
+			return next(
+				new AppError('ALready downVoted once. Cannot do it again')
+			);
+		}
+		const index = question.upVotes.indexOf(user.id);
+		console.log(question.upVotes.length - question.downVotes.length);
+		if (index !== -1) {
+			question.upVotes.splice(index, 1);
+		}
+		question.downVotes.push(user.id);
+		console.log(question.upVotes.length - question.downVotes.length);
+	}
+
+	await Question.findByIdAndUpdate(id, question);
+
+	res.status(200).json({
+		message: 'success',
+	});
+});
+exports.voteAnswer = catchAsync(async (req, res, next) => {
+	const { questionId, vote, answerId } = req.params;
+	const { user } = req;
+	const question = await Question.findById(questionId);
+	const answer = question.answers.find(ans => `${answerId}` === `${ans.id}`);
+	if (!answer) {
+		return next(new AppError("No such Answer found", 404));
+	}
+	const answerIndex = question.answers.indexOf(answer);
+	if (vote === 'upVote') {
+		if (answer.upVotes.includes(user.id)) {
+			return next(
+				new AppError('ALready upVoted once. Cannot do it again')
+			);
+		}
+		const index = answer.downVotes.indexOf(user.id);
+		console.log(answer.upVotes.length - answer.downVotes.length);
+		if (index !== -1) {
+			answer.downVotes.splice(index, 1);
+		}
+		answer.upVotes.push(user.id);
+		console.log(answer.upVotes.length - answer.downVotes.length);
+	}
+	if (vote === 'downVote') {
+		if (answer.downVotes.includes(user.id)) {
+			return next(
+				new AppError('ALready downVoted once. Cannot do it again')
+			);
+		}
+		const index = answer.upVotes.indexOf(user.id);
+		console.log(answer.upVotes.length - answer.downVotes.length);
+		if (index !== -1) {
+			answer.upVotes.splice(index, 1);
+		}
+		answer.downVotes.push(user.id);
+		console.log(answer.upVotes.length - answer.downVotes.length);
+	}
+	question.answers[answerIndex] = answer;
+	await Question.findByIdAndUpdate(questionId, question);
+
+	res.status(200).json({
+		message: 'success',
+	});
+});

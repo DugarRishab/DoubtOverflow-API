@@ -11,15 +11,18 @@ Router.route('/')
 
 Router.route('/:id')
 	.get(questionController.getQuestion)
-	// .patch(authController.protect, questionController.updateQuestion)
-	.delete();
+// .patch(authController.protect, questionController.updateQuestion)
+	.delete(authController.protect, questionController.deleteQuestion);
 
-// Router.patch('/vote', authController.protect, questionController.updateVote);
+Router.patch('/:id/vote/:vote', authController.protect, questionController.voteQuestion);
 
 Router.route('/:id/answer')
 	// .patch(authController.protect, questionController.updateAnswer)
 	.post(authController.protect, questionController.postAnswer)
 	// .delete(authController.protect, questionController.deleteAnswer);
 
-
+Router.route('/:questionId/answer/:answerId').patch().delete(authController.protect, questionController.deleteAnswer);
+Router.route('/:questionId/answer/:answerId/vote/:vote')
+	.patch(authController.protect, questionController.voteAnswer)
+	
 module.exports = Router;
