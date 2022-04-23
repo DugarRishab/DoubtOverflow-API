@@ -7,7 +7,7 @@ const path = require("path");
 const cors = require("cors");
 const compression = require("compression");
 const helmet = require("helmet");
-const rateLimit = require("ratelimit");
+const rateLimit = require("express-rate-limit");
 const hpp = require('hpp');
 
 const app = express();
@@ -35,13 +35,12 @@ app.use((req, res, next) => {
 });
 
 const limiter = rateLimit({
-	max: 100,
+	max: 500, // max number of times per windowMS
 	windowMs: 60 * 60 * 1000,
-	message:
-		"!!! Too many requests from this IP, Please try again in 1 hour !!!",
+	message: "!!! Too many requests from this IP, Please try again in 1 hour !!!",
 });
 
-// app.use("/api", limiter); // <- Limit requests (Middleware)
+app.use("/api", limiter); // <- Limit requests (Middleware)
 
 app.use((req, res, next) => {
 	res.setHeader("Content-Type", "application/json");
