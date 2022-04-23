@@ -106,3 +106,46 @@ exports.postAnswer = catchAsync(async (req, res, next) => {
 		}
 	});
 });
+exports.deleteQuestion = catchAsync(async (req, res, next) => {
+	const { id } = req.params;
+	const { user } = req;
+	
+	const question = await Question.findById(id);
+	
+	if (`${user._id}` != `${question.user}`) {
+		return next(new AppError("You donot have permission to perform this action", 403));
+	}
+	await Question.findByIdAndDelete(id);
+
+	res.status(200).json({
+		message: "success"
+	});
+
+});
+exports.deleteAnswer = catchAsync(async (req, res, next) => {
+	const { questionId, answerId } = req.params;
+	const { user } = req;
+
+	const question = await Question.findById(questionId);
+	//console.log(question.user, user._id, typeof question.user, typeof user._id);
+	const answer = question.answers.find(ans => `${answerId}` === `${ans.id}`);
+	if (!answer) {
+		return next(new AppError("No such answer found", 404));
+	}
+	if (`${user._id}` !== `${answer.user}`) {
+		return next(
+			new AppError(
+				'You donot have permission to perform this action',
+				403
+			)
+		);
+	}
+	// console.log(question.answers.length);
+	question.answers.splice(question.answers.indexOf(answer), 1);
+	// console.log(question.answers.length);
+	await Question.findByIdAndUpdate(questionId, question);
+
+	res.status(200).json({
+		message: 'success',
+	});
+})
