@@ -26,7 +26,8 @@ const createSendToken = (user, statusCode, res) => {
 		expires: new Date(Date.now() + +process.env.JWT_COOKIE_EXPIRES_IN),
 		httpOnly: true,
 		path: '/',
-		sameSite: false,
+		sameSite: 'none',
+		domain: 'https://doubt-overflow-ec0aa.web.app/',
 	};
 	if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
