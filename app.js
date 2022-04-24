@@ -18,9 +18,9 @@ const questionRoutes = require('./routes/questionRoutes');
 
 app.enable("trust proxy");
 
-app.use(cors({ credentials: true, origin: 'https://doubt-overflow-ec0aa.web.app' }));
+app.use(cors({ credentials: true, origin: 'https://lambent-arithmetic-a826aa.netlify.app' }));
 // app.use(cors());
-app.options('https://doubt-overflow-ec0aa.web.app', cors());
+app.options('https://lambent-arithmetic-a826aa.netlify.app', cors());
 app.use(helmet()); // <- Set security HTTP Headers
 
 app.use(morgan('dev'));

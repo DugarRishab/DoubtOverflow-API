@@ -27,7 +27,7 @@ const createSendToken = (user, statusCode, res) => {
 		httpOnly: true,
 		path: '/',
 		sameSite: 'none',
-		domain: 'https://doubt-overflow-ec0aa.web.app/',
+	
 	};
 	if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
