@@ -18,9 +18,9 @@ const questionRoutes = require('./routes/questionRoutes');
 
 app.enable("trust proxy");
 
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cors({ credentials: true, origin: 'https://doubt-overflow-ec0aa.web.app' }));
 // app.use(cors());
-app.options('http://localhost:3000', cors());
+app.options('https://doubt-overflow-ec0aa.web.app', cors());
 app.use(helmet()); // <- Set security HTTP Headers
 
 app.use(morgan('dev'));
